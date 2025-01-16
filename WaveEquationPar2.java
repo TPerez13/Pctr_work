@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 public class WaveEquationPar2 {
     // Constantes globales
-    private static final int N = 5000000; // Número de puntos espaciales
+    private static final int N = 10000; // Número de puntos espaciales
     private static final int T = 10000; // Número de pasos temporales
     private static final double C = 0.1; // Velocidad de la onda
     private static final double DX = 0.01; // Tamaño del paso espacial
     private static final double DT = 0.005; // Tamaño del paso temporal
-    private static final int NUM_THREADS = 15; // Número de hilos en el pool
+    private static final int NUM_THREADS = 1; // Número de hilos en el pool
     public static void main(String[] args) {
         // Declaración de arrays
         double[] A = new double[N];
@@ -39,6 +39,7 @@ public class WaveEquationPar2 {
         // Iteración temporal
         for (int t = 0; t < T; t++) {
             // Esto garantiza que el semáforo se reinicie a 0.
+            //System.out.println("->Estoy en el t: "+t);
             semaphore.drainPermits(); 
             // Dividir el dominio espacial entre hilos
             int dominio = (N - 2) / NUM_THREADS;
@@ -48,12 +49,16 @@ public class WaveEquationPar2 {
 
                 executor.submit(() -> {
                     // Actualizar valores en este dominio
-                    //updateWave(A, A_prev, A_next, start, end);
                     for (int i = start; i < end; i++) {
                         A_next[i] = (2.0 * A[i]) - A_prev[i] + (Math.pow(C * DT / DX, 2) * (A[i - 1] - 2.0 * A[i] + A[i + 1]));
                     }
+                    
                     semaphore.release();
                 });
+                if (t% 100 == 0) {
+                  //  System.out.println("-->Hilos activos: " + executor.getActiveCount());
+
+               // }
             }
             // Esperar a que todos los hilos terminen
             try {
@@ -90,14 +95,6 @@ public class WaveEquationPar2 {
             A_prev[i] = A[i]; // Copia inicial para el paso anterior
         }
     }
-
-    // Actualización de los valores en un paso temporal
-   /* private static void updateWave(double[] values, double[] oldValues, double[] newValues, int start, int end) {
-        double coeff = (C * C * DT * DT) / (DX * DX);
-        for (int i = start; i < end; i++) {
-            newValues[i] = (2.0 * values[i]) - oldValues[i] + coeff * (values[i - 1] - 2.0 * values[i] + values[i + 1]);
-        }
-    }*/
     
     // Gestión de los puntos frontera
     private static void manageBoundaryConditions(double[] A_next) {

@@ -3,8 +3,8 @@ import java.io.IOException;
 
 public class WaveEquationSec{
     // Constantes globales
-    private static final int N = 5000000; // Hemos aumentado el N para afinar la curva
-    private static final int T = 10000; // Número de pasos temporales
+    private static final int N = 100; // Hemos aumentado el N para afinar la curva
+    private static final int T = 100000; // Número de pasos temporales
     private static final double C = 0.1; // Velocidad de propagación de la onda
     private static final double DX = 0.01; // Tamaño del paso espacial
     private static final double DT = 0.005; // Tamaño del paso temporal
@@ -37,9 +37,9 @@ public class WaveEquationSec{
             System.arraycopy(A_next, 0, A, 0, N);
             
             // Almacenamiento y visualización de resultados
-            if (t % 100 == 0) {
+           /*/ if (t % 100 == 0) {
                 saveResultsToFile(A_next);
-            }
+            }*/
         }
         long endTime = System.nanoTime();
         double executionTime = (endTime - startTime) / 1e9; // Convertir a segundos

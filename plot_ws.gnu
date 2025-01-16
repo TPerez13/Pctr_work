@@ -6,4 +6,4 @@ set ylabel "Amplitud"
 set grid
 set key outside
 
-plot for [i=2:10] 'wave_output_sequential.txt' using 0:i with lines title sprintf("Timestep %d", i-1)
+plot for [i=2:10] 'wave_sequential_results.txt' using 0:i with lines title sprintf("Timestep %d", i-1)
